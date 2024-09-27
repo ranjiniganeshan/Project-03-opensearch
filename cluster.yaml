@@ -1,0 +1,43 @@
+# An example of ClusterConfig object using an existing VPC:
+# You can find more examples in https://github.com/eksctl-io/eksctl/tree/main/examples
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: demo-cluster
+  region: us-west-2
+  version: "1.28"
+
+vpc:
+  id: "vpc-09efbe7c58c60aab4"
+  subnets:
+    public:
+      ap-northeast-2a:
+          id: "subnet-05b7565943800f40e"
+      ap-northeast-2b:
+          id: "subnet-0e973340d2371f8ae"
+
+iam:
+  withOIDC: true
+
+managedNodeGroups:
+- name: cloud-eks-workers
+  desiredCapacity: 2
+  iam:
+    withAddonPolicies:
+      albIngress: true
+  instanceTypes: ["t3.micro"]
+  spot: true
+
+cloudWatch:
+    clusterLogging:
+        enableTypes: ["audit", "authenticator", "controllerManager"]
+
+
+helm upgrade --install fluent-bit eks/aws-for-fluent-bit \
+  --namespace kube-system --set cloudWatchLogs.enabled=false \
+  --set serviceAccount.create=false --set serviceAccount.name=fluent-bit \
+  --set opensearch.enabled=true --set opensearch.awsRegion=us0west-2 \
+  --set opensearch.host=search-cloud-es-zlm2sr2lwdccexbv4lx5hgqzma.us-west-2.es.amazonaws.com \
+  --set opensearch.index=aws-fluent-bit 
