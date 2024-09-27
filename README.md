@@ -1,3 +1,6 @@
+## log into ec2 system and execute the below commands to push logs from logstash to openseaerch
+
+```
 wget https://artifacts.elastic.co/downloads/logstash/logstash-8.12.0-linux-x86_64.tar.gz /tmp
 sudo amazon-linux-extras -y install java-openjdk11
 
@@ -22,7 +25,7 @@ output {
     }
 }
 
-
+```
 /usr/share/logstash/logstash-8.12.0/bin/logstash -f /etc/logstash/conf.d/logstash.conf
 
 
